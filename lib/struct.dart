@@ -25,7 +25,7 @@ List unpack(String format, ByteBuffer buffer) {
   List output = [];
   ByteData bytes = new ByteData.view(buffer);
 
-  Endianness endian;
+  Endian endian;
 
   int index = 0;
 
@@ -33,13 +33,13 @@ List unpack(String format, ByteBuffer buffer) {
 
   var firstChar = format[index];
   if (firstChar == '@' || firstChar == '=') {
-    endian = Endianness.HOST_ENDIAN;
+    endian = Endian.host;
     i = 1;
   } else if (firstChar == '<') {
-    endian = Endianness.LITTLE_ENDIAN;
+    endian = Endian.little;
     i = 1;
   } else if (firstChar == '>' || firstChar == '!') {
-    endian = Endianness.BIG_ENDIAN;
+    endian = Endian.big;
     i = 1;
   }
 
@@ -92,13 +92,12 @@ List unpack(String format, ByteBuffer buffer) {
         break;
       case 'l':
         var long = bytes.getInt64(index, endian);
-        output.add(long);
+        output.add(BigInt.from(long).toSigned(64));
         index += 8;
         break;
       case 'L':
         var long = bytes.getUint64(index, endian);
-        ;
-        output.add(long);
+        output.add(BigInt.from(long).toUnsigned(64));
         index += 8;
         break;
       case 'f':
@@ -131,18 +130,18 @@ ByteBuffer pack(String format, List data) {
   ByteData bytes = new ByteData(length);
   int index = 0;
 
-  Endianness endian;
+  Endian endian;
 
   int i = 0;
   var firstChar = format[i];
   if (firstChar == '@' || firstChar == '=') {
-    endian = Endianness.HOST_ENDIAN;
+    endian = Endian.host;
     i = 1;
   } else if (firstChar == '<') {
-    endian = Endianness.LITTLE_ENDIAN;
+    endian = Endian.little;
     i = 1;
   } else if (firstChar == '>' || firstChar == '!') {
-    endian = Endianness.BIG_ENDIAN;
+    endian = Endian.big;
     i = 1;
   }
 
@@ -198,15 +197,23 @@ ByteBuffer pack(String format, List data) {
         index += 4;
         break;
       case 'l':
-        int long = data[dataIndex++];
-        long = long.clamp(unsignedLongMin, unsignedLongMax);
-        bytes.setUint64(index, long, endian);
+        BigInt long = data[dataIndex++];
+        if (long < unsignedLongMin) {
+          long = unsignedLongMin;
+        } else if (long > unsignedLongMax) {
+          long = unsignedLongMax;
+        }
+        bytes.setUint64(index, long.toSigned(64).toInt(), endian);
         index += 8;
         break;
       case 'L':
-        int long = data[dataIndex++];
-        long = long.clamp(signedLongMin, signedLongMax);
-        bytes.setUint64(index, long, endian);
+        BigInt long = data[dataIndex++];
+        if (long < signedLongMin) {
+          long = signedLongMin;
+        } else if (long > signedLongMax) {
+          long = signedLongMax;
+        }
+        bytes.setUint64(index, long.toSigned(64).toInt(), endian);
         index += 8;
         break;
       case 'f':

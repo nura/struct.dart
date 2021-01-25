@@ -18,8 +18,8 @@ const int signedIntMax = 2147483647;
 const int unsignedIntMin = 0;
 const int unsignedIntMax = 4294967295;
 
-const int signedLongMin = -9223372036854775808;
-const int signedLongMax = 9223372036854775807;
+BigInt signedLongMin = BigInt.from(-9223372036854775808);
+BigInt signedLongMax = BigInt.from(9223372036854775807);
 
-const int unsignedLongMin = 0;
-const int unsignedLongMax = 18446744073709551615;
+BigInt unsignedLongMin = BigInt.from(0);
+BigInt unsignedLongMax = BigInt.parse('18446744073709551615');

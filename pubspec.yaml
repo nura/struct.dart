@@ -1,7 +1,8 @@
 name: struct
 description: Library for packing and unpacking byte data using format strings
-author: Austin Cummings <austincummings95@gmail.com>
-homepage: https://github.com/austincummings/struct.dart
-version: 1.0.0
-dependencies:
-  test: ">=0.12.4 <0.13.0"
+repository: https://github.com/davidlawson/struct.dart
+version: 2.0.0
+dev_dependencies:
+  test: '>=1.15.0 <2.0.0'
+environment:
+  sdk: '>=2.10.0 <3.0.0'
