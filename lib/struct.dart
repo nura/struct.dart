@@ -10,20 +10,21 @@ import './constants.dart';
 // >	big-endian	standard	none
 // !	network (= big-endian)	standard	none
 
-List unpack(String format, ByteBuffer buffer) {
+List unpack(String format, Uint8List data) {
   if (format == null || format == '') {
     throw new ArgumentError('Format string must have a value');
   }
 
   var length = calculateSize(format);
 
-  if (length != buffer.lengthInBytes) {
+  if (length != data.length) {
     throw new FormatException(
         'Format string length does not match buffer length');
   }
 
   List output = [];
-  ByteData bytes = new ByteData.view(buffer);
+  ByteData bytes =
+      new ByteData.view(data.buffer, data.offsetInBytes, data.length);
 
   Endian endian;
 
@@ -119,7 +120,7 @@ List unpack(String format, ByteBuffer buffer) {
   return output;
 }
 
-ByteBuffer pack(String format, List data) {
+Uint8List pack(String format, List data) {
   if (format == null || format == '') {
     throw new ArgumentError('Format string must have a value');
   }
@@ -232,7 +233,7 @@ ByteBuffer pack(String format, List data) {
     }
   }
 
-  return bytes.buffer;
+  return Uint8List.view(bytes.buffer, bytes.offsetInBytes, bytes.lengthInBytes);
 }
 
 int calculateSize(String format) {
