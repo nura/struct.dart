@@ -26,7 +26,7 @@ List unpack(String format, Uint8List data) {
   ByteData bytes =
       new ByteData.view(data.buffer, data.offsetInBytes, data.length);
 
-  Endian endian;
+  Endian endian = Endian.big;
 
   int index = 0;
 
@@ -131,7 +131,7 @@ Uint8List pack(String format, List data) {
   ByteData bytes = new ByteData(length);
   int index = 0;
 
-  Endian endian;
+  Endian endian = Endian.big;
 
   int i = 0;
   var firstChar = format[i];
