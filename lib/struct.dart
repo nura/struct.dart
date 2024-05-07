@@ -11,7 +11,7 @@ import './constants.dart';
 // !	network (= big-endian)	standard	none
 
 List unpack(String format, Uint8List data) {
-  if (format == null || format == '') {
+  if (format == '') {
     throw new ArgumentError('Format string must have a value');
   }
 
@@ -113,7 +113,6 @@ List unpack(String format, Uint8List data) {
         break;
       default:
         throw new FormatException('Format string cannot contain \'$ch\'');
-        break;
     }
   }
 
@@ -121,7 +120,7 @@ List unpack(String format, Uint8List data) {
 }
 
 Uint8List pack(String format, List data) {
-  if (format == null || format == '') {
+  if (format == '') {
     throw new ArgumentError('Format string must have a value');
   }
 
@@ -175,44 +174,44 @@ Uint8List pack(String format, List data) {
         break;
       case 'h':
         int short = data[dataIndex++];
-        short = short.clamp(unsignedShortMin, unsignedShortMax);
-        bytes.setUint16(index, short, endian);
-        index += 2;
-        break;
-      case 'H':
-        int short = data[dataIndex++];
         short = short.clamp(signedShortMin, signedShortMax);
         bytes.setInt16(index, short, endian);
         index += 2;
         break;
-      case 'i':
-        int integer = data[dataIndex++];
-        integer = integer.clamp(unsignedIntMin, unsignedIntMax);
-        bytes.setInt32(index, integer, endian);
-        index += 4;
+      case 'H':
+        int short = data[dataIndex++];
+        short = short.clamp(unsignedShortMin, unsignedShortMax);
+        bytes.setUint16(index, short, endian);
+        index += 2;
         break;
-      case 'I':
+      case 'i':
         int integer = data[dataIndex++];
         integer = integer.clamp(signedIntMin, signedIntMax);
         bytes.setUint32(index, integer, endian);
         index += 4;
         break;
+      case 'I':
+        int integer = data[dataIndex++];
+        integer = integer.clamp(unsignedIntMin, unsignedIntMax);
+        bytes.setInt32(index, integer, endian);
+        index += 4;
+        break;
       case 'l':
         BigInt long = data[dataIndex++];
-        if (long < unsignedLongMin) {
-          long = unsignedLongMin;
-        } else if (long > unsignedLongMax) {
-          long = unsignedLongMax;
+        if (long < signedLongMin) {
+          long = signedLongMin;
+        } else if (long > signedLongMax) {
+          long = signedLongMax;
         }
         bytes.setUint64(index, long.toSigned(64).toInt(), endian);
         index += 8;
         break;
       case 'L':
         BigInt long = data[dataIndex++];
-        if (long < signedLongMin) {
-          long = signedLongMin;
-        } else if (long > signedLongMax) {
-          long = signedLongMax;
+        if (long < unsignedLongMin) {
+          long = unsignedLongMin;
+        } else if (long > unsignedLongMax) {
+          long = unsignedLongMax;
         }
         bytes.setUint64(index, long.toSigned(64).toInt(), endian);
         index += 8;
@@ -229,7 +228,6 @@ Uint8List pack(String format, List data) {
         break;
       default:
         throw new FormatException('Format string cannot contain \'$ch\'');
-        break;
     }
   }
 
@@ -237,7 +235,7 @@ Uint8List pack(String format, List data) {
 }
 
 int calculateSize(String format) {
-  if (format == null || format == '') {
+  if (format == '') {
     throw new ArgumentError('Format string must have a value');
   }
 
@@ -289,7 +287,6 @@ int calculateSize(String format) {
         break;
       default:
         throw new FormatException('Format string cannot contain \'$ch\'');
-        break;
     }
   }
 
