@@ -1,7 +1,7 @@
 library struct;
 
 import 'dart:typed_data';
-
+import 'package:ieee754/ieee754.dart';
 import './constants.dart';
 
 // @	native	native	native
@@ -110,6 +110,13 @@ List unpack(String format, Uint8List data) {
         var daable = bytes.getFloat64(index, endian);
         output.add(daable);
         index += 8;
+        break;
+      case 'e':
+        var half = FloatParts.fromFloat16Bytes(
+                Uint8List.sublistView(bytes, index), endian)
+            .toDouble();
+        output.add(half);
+        index += 2;
         break;
       default:
         throw new FormatException('Format string cannot contain \'$ch\'');
@@ -226,6 +233,13 @@ Uint8List pack(String format, List data) {
         bytes.setFloat64(index, float, endian);
         index += 8;
         break;
+      case 'e':
+        FloatParts float = FloatParts.fromDouble(data[dataIndex++]);
+        Uint8List halfBytes = float.toFloat16Bytes(endian);
+        bytes.setUint8(index, halfBytes[0]);
+        bytes.setUint8(index + 1, halfBytes[1]);
+        index += 2;
+        break;
       default:
         throw new FormatException('Format string cannot contain \'$ch\'');
     }
@@ -284,6 +298,9 @@ int calculateSize(String format) {
         break;
       case 'd':
         calculatedSize += 8;
+        break;
+      case 'e':
+        calculatedSize += 2;
         break;
       default:
         throw new FormatException('Format string cannot contain \'$ch\'');
