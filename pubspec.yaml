@@ -1,7 +1,7 @@
 name: struct
 description: Library for packing and unpacking byte data using format strings
 repository: https://github.com/nura/struct.dart
-version: 4.0.0
+version: 4.0.1
 dev_dependencies:
   test: '>=1.15.0 <2.0.0'
 environment:
