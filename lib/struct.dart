@@ -113,7 +113,12 @@ List unpack(String format, Uint8List data) {
         break;
       case 'e':
         var half = FloatParts.fromFloat16Bytes(
-                Uint8List.sublistView(bytes, index), endian)
+                // need to create a new list as the library looks at the
+                // underlying buffer, which always points to the start of bytes
+                Uint8List.fromList(
+                  Uint8List.sublistView(bytes, index, index + 2),
+                ),
+                endian)
             .toDouble();
         output.add(half);
         index += 2;
